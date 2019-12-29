@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.network "private_network", ip: "192.168.33.10"
 
-  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+  config.vm.synced_folder ".", "/vagrant"
   
   # [初回のみ]必要なパッケージのインストール等初期設定
   config.vm.provision :shell, :path => "provision/provision.sh"

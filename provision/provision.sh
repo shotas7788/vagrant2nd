@@ -1,5 +1,7 @@
 #!/bin/sh
 
+sudo su -
+
 echo -------------------------------
 echo
 echo historyフォーマット設定
@@ -14,25 +16,27 @@ echo タイムゾーン設定
 echo
 echo -------------------------------
 
-sudo cp /usr/share/zoneinfo/Japan /etc/localtime
+cp /usr/share/zoneinfo/Japan /etc/localtime
 date
 
+echo "nameserver 9.9.9.9" >> /etc/resolv.cof
+
 # インストール済みのパッケージをアップデート
-sudo yum -y update
+yum -y update
 
 # よく使うコマンドをインストール
-sudo yum -y install wget unzip yum-utils mlocate
-sudo updatedb
+yum -y install wget unzip yum-utils mlocate
+updatedb
 
 # epel, remi リポジトリを追加して有効化
-sudo yum -y install epel-release
-sudo rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
-sudo yum-config-manager --enable epel remi
-sudo yum repolist all
+rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+yum-config-manager --enable epel remi
+yum repolist all
+yum -y install epel-release
 
 # dockerインストール
 # 古いバージョンのDockerをアンインストール
-sudo yum remove docker \
+yum remove docker \
                 docker-client \
                 docker-client-latest \
                 docker-common \
@@ -42,36 +46,49 @@ sudo yum remove docker \
                 docker-engine
 
 # 必要なパッケージをインストール
-sudo yum install -y yum-utils \
+yum install -y yum-utils \
   device-mapper-persistent-data \
   lvm2
 
 # 安定版が含まれるリポジトリを設定
-sudo yum-config-manager \
+yum-config-manager \
     --add-repo \
     https://download.docker.com/linux/centos/docker-ce.repo
 
 # 最新バージョンのDocker CEをインストール
-sudo yum install -y docker-ce docker-ce-cli containerd.io
+yum install -y docker-ce docker-ce-cli containerd.io
 
 # Docker を起動して、hello-world イメージを実行
-sudo systemctl start docker
-sudo systemctl enable docker
-sudo docker run hello-world
+systemctl start docker
+systemctl enable docker
+docker run hello-world
 
 # dockerバージョン確認
 docker --version
 
 # 現行ユーザをdockerグループに所属させる
 # （dockerがインストールされた時点でdockerグループは作られる）
-sudo gpasswd -a $USER docker
+gpasswd -a vagrant docker
 
 # dockerデーモンを再起動する (CentOS7の場合)
-sudo systemctl restart docker
+systemctl restart docker
 
 # docker-compose
 # docker-composeをインストールする
-sudo curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 
 # docker-composeコマンド実行権限の付与
-sudo chmod +x /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+# gitのインストール
+yum install -y git
+
+# gitの初期設定
+git config --global core.filemode false
+git config --global core.ignorecase false
+git config --global color.ui true
+git config --global color.diff auto
+git config --global color.status auto
+git config --global color.branch auto
+git config --global core.quotepath false
+git config --global core.precomposeunicode true
