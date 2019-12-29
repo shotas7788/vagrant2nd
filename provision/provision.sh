@@ -68,3 +68,10 @@ sudo gpasswd -a $USER docker
 
 # dockerデーモンを再起動する (CentOS7の場合)
 sudo systemctl restart docker
+
+# docker-compose
+# docker-composeをインストールする
+sudo curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+
+# docker-composeコマンド実行権限の付与
+sudo chmod +x /usr/local/bin/docker-compose
