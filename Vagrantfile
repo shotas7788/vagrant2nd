@@ -11,4 +11,7 @@ Vagrant.configure("2") do |config|
   
   # [初回のみ]必要なパッケージのインストール等初期設定
   config.vm.provision :shell, :path => "provision/provision.sh"
+
+
+  
 end
